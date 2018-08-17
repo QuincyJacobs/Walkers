@@ -23,7 +23,7 @@
     <ProjectGuid>{6D74C364-53DD-40AC-B8F9-034F62FD3DEB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Walkers</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -152,7 +152,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Walkers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
