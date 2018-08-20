@@ -113,6 +113,10 @@ int main()
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}	
 
+		// assignment 2
+		//int horizontalOffsetLocation = glGetUniformLocation(myShader.ID, "HorizontalOffset");
+		//glUniform1f(horizontalOffsetLocation, 0.5f);
+
 		// render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
