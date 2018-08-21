@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "stb_image.h"
 
 #include "Vector2.h"
 #include "Shader.h"
@@ -8,6 +9,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void generateTexture(unsigned int* textureID, const GLchar* image);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -41,24 +43,32 @@ int main()
 	}
 
 	// build and compile our shader program
-	// ------------------------------------
+	// ------------------------------------------------------------------
 	Shader myShader("shader.vs", "shader.fs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
-		// positions			// colors
-		-0.5f,  -0.5f,  0.0f,	1.0f, 0.0f, 0.0f, // bottom left
-		 0.5f,  -0.5f,  0.0f,	0.0f, 1.0f, 0.0f, // bottom right
-		 0.0f,   0.5f,  0.0f,	0.0f, 0.0f, 1.0f  // top middle
+		// positions			// colors			// texture coords
+		-0.5f,  -0.5f,  0.0f,	1.0f, 0.0f, 0.0f,	0.0f, 0.0f, // bottom left
+		 0.5f,  -0.5f,  0.0f,	0.0f, 1.0f, 0.0f,	1.0f, 0.0f, // bottom right
+		 0.0f,   0.5f,  0.0f,	0.0f, 0.0f, 1.0f,	0.5f, 1.0f  // top-center
 	};
 	/*
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 2, 4
+	unsigned int indices[] = {
+		0, 1, 3, 
 	};
 	*/
 
-	unsigned int VAO, VBO;// , EBO;
+	// Textures
+	// ------------------------------------------------------------------
+	// generating a texture
+	unsigned int texture; // ID
+	generateTexture(&texture, "Assets/Textures/wall.jpg");
+
+	// Vertex Array Object and Vertex Buffer Object
+	// ------------------------------------------------------------------
+	unsigned int VAO, VBO;// , EBO; // ID
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 
@@ -74,11 +84,14 @@ int main()
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// colors
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	// textures
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -104,15 +117,6 @@ int main()
 		// input
 		processInput(window);
 
-		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) 
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}	
-
 		// assignment 2
 		//int horizontalOffsetLocation = glGetUniformLocation(myShader.ID, "HorizontalOffset");
 		//glUniform1f(horizontalOffsetLocation, 0.5f);
@@ -124,7 +128,8 @@ int main()
 		// activate our first shader program
 		myShader.use();
 
-		// draw our first triangle
+		// draw triangle
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -145,7 +150,17 @@ int main()
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
 		glfwSetWindowShouldClose(window, true);
+	}
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -154,6 +169,35 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	// make sure the viewport matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
+}
+
+void generateTexture(unsigned int* textureID, const GLchar* image)
+{
+	glGenTextures(1, textureID);
+	glBindTexture(GL_TEXTURE_2D, *textureID);
+
+	// repeat 2d texure mirrored by S and T axis
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	// texture filtering (used when images are being scaled)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // get interpolated mipmap and interpolated pixels when downscaling
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // get interpolated pixel when upscaling   (note: Do not ask for mipmaps when upscaling, will result in error)
+
+	// load the image
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load(image, &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		// generate the texture
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture " << image << std::endl;
+	}
+	stbi_image_free(data);
 }
 
 void vector2Demo(){

@@ -152,16 +152,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Walkers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.fs" />
     <None Include="shader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\Textures\container.jpg" />
+    <Image Include="Assets\Textures\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

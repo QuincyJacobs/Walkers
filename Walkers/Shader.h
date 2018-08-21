@@ -12,7 +12,7 @@ class Shader
 {
 public:
 	// the program ID
-	unsigned int ID;
+	unsigned int ID; // ID
 
 	// constructor reads and builds the shader
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
@@ -55,7 +55,7 @@ public:
 
 		// --------------------------------------------------------------------------------------
 		// 2. compile shaders
-		unsigned int vertex, fragment;
+		unsigned int vertex, fragment; // ID
 		int success;
 		char infoLog[512];
 
