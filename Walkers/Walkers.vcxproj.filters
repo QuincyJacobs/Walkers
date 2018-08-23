@@ -60,5 +60,11 @@
     <Image Include="Assets\Textures\wall.jpg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="Assets\Textures\awesomeface.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Assets\Textures\awesomeface.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

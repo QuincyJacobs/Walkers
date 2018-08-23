@@ -52,25 +52,31 @@ int main()
 		// positions			// colors			// texture coords
 		-0.5f,  -0.5f,  0.0f,	1.0f, 0.0f, 0.0f,	0.0f, 0.0f, // bottom left
 		 0.5f,  -0.5f,  0.0f,	0.0f, 1.0f, 0.0f,	1.0f, 0.0f, // bottom right
-		 0.0f,   0.5f,  0.0f,	0.0f, 0.0f, 1.0f,	0.5f, 1.0f  // top-center
+		-0.5f,   0.5f,  0.0f,	0.0f, 0.0f, 1.0f,	0.0f, 1.0f,  // top left
+		 0.5f,   0.5f,  0.0f,	1.0f, 1.0f, 1.0f,	1.0f, 1.0f  // top right
 	};
-	/*
+	
 	unsigned int indices[] = {
-		0, 1, 3, 
+		0, 1, 3,	// first triangle
+		0, 2, 3		// second triangle
 	};
-	*/
+	
 
 	// Textures
 	// ------------------------------------------------------------------
-	// generating a texture
-	unsigned int texture; // ID
-	generateTexture(&texture, "Assets/Textures/wall.jpg");
+	stbi_set_flip_vertically_on_load(true);
+	// generating textures
+	unsigned int texture1; // ID
+	generateTexture(&texture1, "Assets/Textures/container.jpg");
+	unsigned int texture2; // ID
+	generateTexture(&texture2, "Assets/Textures/awesomeface.jpg");
 
 	// Vertex Array Object and Vertex Buffer Object
 	// ------------------------------------------------------------------
-	unsigned int VAO, VBO;// , EBO; // ID
+	unsigned int VAO, VBO, EBO; // ID
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
 	// Vertex Array Object registers/binds VBO (and EBO)
 	glBindVertexArray(VAO);
@@ -80,8 +86,8 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Element Buffer Object
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// positions
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -111,6 +117,12 @@ int main()
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	// activate the shader program
+	myShader.use();
+	// two ways of setting textures for the fragment shader to use
+	glUniform1i(glGetUniformLocation(myShader.ID, "texture1"), 0); // set texure manually
+	myShader.setInt("texture2", 1); // set texture with the shader class
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -125,14 +137,15 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// activate our first shader program
-		myShader.use();
-
 		// draw triangle
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+
 		glBindVertexArray(VAO);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); 
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		//glBindVertexArray(0); // no need to unbind it every time 
 
