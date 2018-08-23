@@ -7,20 +7,19 @@ in vec2 TexCoord;
 
 uniform sampler2D texture1;
 uniform sampler2D texture2;
+uniform float texMix;
 
 // assignment 3
 //in vec4 VertexPositions;
 
 void main()
 {
-    // with colors
+    // colors
     // FragColor = vec4(VertexColor, 1.0f);
 
-    vec4 texture2vec = texture(texture2, vec2(TexCoord.x+1.0f, TexCoord.y));
+    // modify texture for fun
+    vec4 texture2vec = texture(texture2, vec2(-TexCoord.x, TexCoord.y));
 
     // with textures
-    FragColor = mix(texture(texture1, TexCoord), vec4(texture2vec.x, texture2vec.y, texture2vec.z, texture2vec.w), 0.2); //texture(texture2, TexCoord); 
-
-    // assignment 3
-    //FragColor = VertexPositions;
+    FragColor = mix(texture(texture1, TexCoord), vec4(texture2vec.x, texture2vec.y, texture2vec.z, texture2vec.w), texMix); 
 }

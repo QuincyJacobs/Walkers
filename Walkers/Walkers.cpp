@@ -123,15 +123,15 @@ int main()
 	glUniform1i(glGetUniformLocation(myShader.ID, "texture1"), 0); // set texure manually
 	myShader.setInt("texture2", 1); // set texture with the shader class
 
+	// set the texture mixture rate
+	myShader.setFloat("texMix", 0.1f);
+
 	// render loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
 		processInput(window);
 
-		// assignment 2
-		//int horizontalOffsetLocation = glGetUniformLocation(myShader.ID, "HorizontalOffset");
-		//glUniform1f(horizontalOffsetLocation, 0.5f);
 
 		// render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -189,9 +189,9 @@ void generateTexture(unsigned int* textureID, const GLchar* image)
 	glGenTextures(1, textureID);
 	glBindTexture(GL_TEXTURE_2D, *textureID);
 
-	// repeat 2d texure mirrored by S and T axis
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	// 2d texure repeat by S and T axis
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	// texture filtering (used when images are being scaled)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // get interpolated mipmap and interpolated pixels when downscaling
