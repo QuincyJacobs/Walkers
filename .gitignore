@@ -39,3 +39,4 @@ Debug/
 .vs/
 Walkers/glad.c
 Walkers/Walkers.vcxproj
+*.vcxproj
