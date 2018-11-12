@@ -159,34 +159,53 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
+
+		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+
+		unsigned int modelLoc = glGetUniformLocation(myShader.ID, "model");
+		unsigned int viewLoc = glGetUniformLocation(myShader.ID, "view");
+		unsigned int projectionLoc = glGetUniformLocation(myShader.ID, "projection");
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		// rotating block
-		{
-			// add translation to the vertices
-			glm::mat4 trans(1.0f);
-			trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-			trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+		//{
+		//	// add translation to the vertices
+		//	glm::mat4 trans(1.0f);
+		//	trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		//	trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 
-			unsigned int transformLoc = glGetUniformLocation(myShader.ID, "transform");
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		//	unsigned int transformLoc = glGetUniformLocation(myShader.ID, "transform");
+		//	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			//glDrawArrays(GL_TRIANGLES, 0, 3);
-		}
+		//	glBindVertexArray(VAO);
+		//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//	//glDrawArrays(GL_TRIANGLES, 0, 3);
+		//}
 
 		// scaling block
-		{
-			// add translation to the vertices
-			glm::mat4 trans(1.0f);
-			trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
-			trans = glm::scale(trans, glm::vec3(glm::sin((float)glfwGetTime())));
+		//{
+		//	// add translation to the vertices
+		//	glm::mat4 trans(1.0f);
+		//	trans = glm::translate(trans, glm::vec3(-0.5f, 0.5f, 0.0f));
+		//	trans = glm::scale(trans, glm::vec3(glm::sin((float)glfwGetTime())));
 
-			unsigned int transformLoc = glGetUniformLocation(myShader.ID, "transform");
-			glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &trans[0][0]);
+		//	unsigned int transformLoc = glGetUniformLocation(myShader.ID, "transform");
+		//	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, &trans[0][0]);
 
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			//glDrawArrays(GL_TRIANGLES, 0, 3);
-		}
+		//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//	//glDrawArrays(GL_TRIANGLES, 0, 3);
+		//}
 
 		//glBindVertexArray(0); // no need to unbind it every time 
 
