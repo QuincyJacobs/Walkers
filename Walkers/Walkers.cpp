@@ -17,8 +17,10 @@ void processInput(GLFWwindow *window);
 void generateTexture(unsigned int* textureID, const GLchar* image);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCREEN_WIDTH = 800;
+const unsigned int SCREEN_HEIGHT = 600;
+float SCREEN_ASPECT = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+float SCREEN_FOV = 45.0f;
 
 int main()
 {
@@ -30,7 +32,7 @@ int main()
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 
 	// glfw window creation
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Walkers", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Walkers", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -228,7 +230,7 @@ int main()
 
 		//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(SCREEN_FOV), SCREEN_ASPECT, 0.1f, 100.0f); //(float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
 		//unsigned int modelLoc = glGetUniformLocation(myShader.ID, "model");
 		unsigned int viewLoc = glGetUniformLocation(myShader.ID, "view");
@@ -248,7 +250,16 @@ int main()
 			// calculate the model matrix for each object and pass it to shader before drawing
 			model = glm::translate(model, cubePositions[i]);
 			float angle = 20.0f * i;
-			model = glm::rotate(model, (float)glfwGetTime() * 2.0f +  glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+			if (i % 3 == 0)
+			{
+				model = glm::rotate(model, (float)glfwGetTime() * 2.0f + glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			}
+			else
+			{
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			}
+
 			myShader.setMat4("model", model);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -298,17 +309,56 @@ int main()
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void processInput(GLFWwindow *window)
 {
+	// CONTROLS:
+	//
+	// 'esc' to quit
+	// '1' key shifts between edge view and normal view
+	// '2' key controls the screen aspect ratio
+	// '3' key controls the field of view
+	// 'shift' + '#' key for the opposite action
+
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
 	}
-	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+
+	// Draw normal or just edges
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+
+	// Screen aspect ratio control
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		if (SCREEN_ASPECT >= 0.1f) {
+			SCREEN_ASPECT -= 0.001f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	{
+		if (SCREEN_ASPECT <= 5) {
+			SCREEN_ASPECT += 0.001f;
+		}
+	}
+
+	// Field of View control
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+	{
+		if (SCREEN_FOV >= 5) {
+			SCREEN_FOV -= 0.03f;
+		}
+	}
+	if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	{
+		if (SCREEN_FOV <= 90) {
+			SCREEN_FOV += 0.03f;
+		}
 	}
 }
 
