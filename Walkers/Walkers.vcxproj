@@ -152,11 +152,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="ObjFileToVertice.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Walkers.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ObjFileToVertice.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Vector2.h" />
@@ -168,6 +170,9 @@
   <ItemGroup>
     <Image Include="Assets\Textures\container.jpg" />
     <Image Include="Assets\Textures\wall.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resource_Files\Models\mug1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
