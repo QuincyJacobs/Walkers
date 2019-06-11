@@ -18,8 +18,7 @@ ObjFileToVertice::~ObjFileToVertice()
 void ObjFileToVertice::ReadVectors(char *fileDir)
 {
 	char letter = 'v';
-
-	//std::string fullFileDir = fileDir;
+	std::vector<float> prevFloats(0);
 
 	std::ifstream file(fileDir);
 	if (file.is_open())
@@ -35,11 +34,26 @@ void ObjFileToVertice::ReadVectors(char *fileDir)
 			{
 				iss.str(line);
 
-				// {iss} inserts several elements into an STL container instead of 1 at a time
+				// TODO(Quincy): Results not found on second loop?
 				std::vector<std::string> results(std::istream_iterator<std::string>{iss},
 					std::istream_iterator<std::string>());
+				// HINT: {iss} inserts several elements into an STL container instead of 1 at a time
 
-				// TODO(Quincy): put results into float array
+				int newContainerSize = prevFloats.size() + 3;
+				std::vector<float> parsedFloats(newContainerSize);
+
+				// copy older values into new container
+				for (int i = 0; i < prevFloats.size(); i++)
+				{
+					parsedFloats[i] = prevFloats[i];
+				}
+				// copy new values in new container
+				for (int i = 0; i < 3; i++)
+				{
+					parsedFloats[newContainerSize - (3-i)] = ::strtof(results[i+1].c_str(),0);
+				}
+				prevFloats.clear();
+				prevFloats = parsedFloats;
 			}
 		}
 	}
