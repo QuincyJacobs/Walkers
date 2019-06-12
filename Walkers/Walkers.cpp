@@ -231,8 +231,12 @@ int main()
 	// enable depth testing so surfaces in the front get drawn over the ones in the back
 	glEnable(GL_DEPTH_TEST);
 
+	// TODO(Quincy): read up on STL containers
+	// TODO(Quincy): read up on std::vector
+
+	// TODO(Quincy): do something with mugPositions!
 	ObjFileToVertice *oftv = new ObjFileToVertice();
-	oftv->ReadVectors("Resource_Files/Models/mug1.txt");
+	std::vector<float> mugPositions = oftv->ReadVectors("Resource_Files/Models/mug1.txt");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))

@@ -1,9 +1,10 @@
 #pragma once
+#include <vector>
 class ObjFileToVertice
 {
 public:
 	ObjFileToVertice();
 	~ObjFileToVertice();
-	void ReadVectors(char *fileDir);
+	std::vector<float> ReadVectors(char *fileDir);
 };
 
