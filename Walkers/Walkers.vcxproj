@@ -173,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resource_Files\Models\mug1.txt" />
+    <Text Include="Resource_Files\Models\thing.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

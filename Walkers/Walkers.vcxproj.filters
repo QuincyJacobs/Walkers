@@ -74,5 +74,8 @@
     <Text Include="Resource_Files\Models\mug1.txt">
       <Filter>Resource Files\Models</Filter>
     </Text>
+    <Text Include="Resource_Files\Models\thing.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
   </ItemGroup>
 </Project>
