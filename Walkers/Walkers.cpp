@@ -12,6 +12,7 @@
 #include "ObjFileToVertice.h"
 
 #include <iostream>
+#include <stdlib.h>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -155,6 +156,20 @@ int main()
 		glm::vec3(1.5f,  0.2f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
+
+
+	// Model loading
+	// ------------------------------------------------------------------
+	// TODO(Quincy): read up on STL containers
+	// TODO(Quincy): read up on std::vector
+
+	// TODO(Quincy): do something with mugPositions!
+	ObjFileToVertice *oftv = new ObjFileToVertice();
+	std::vector<float> mugPositions = oftv->ReadVectors("Resource_Files/Models/mug1.txt");
+
+	float *mugVertices;
+	mugVertices = (float*)malloc(mugPositions.size() * sizeof(float));
+	std::copy(mugPositions.begin(), mugPositions.end(), mugVertices);
 	
 
 	// Textures
@@ -187,9 +202,11 @@ int main()
 	// positions
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
 	// colors
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	//glEnableVertexAttribArray(1);
+
 	// textures
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(2);
@@ -230,13 +247,6 @@ int main()
 
 	// enable depth testing so surfaces in the front get drawn over the ones in the back
 	glEnable(GL_DEPTH_TEST);
-
-	// TODO(Quincy): read up on STL containers
-	// TODO(Quincy): read up on std::vector
-
-	// TODO(Quincy): do something with mugPositions!
-	ObjFileToVertice *oftv = new ObjFileToVertice();
-	std::vector<float> mugPositions = oftv->ReadVectors("Resource_Files/Models/mug1.txt");
 
 	// render loop
 	while (!glfwWindowShouldClose(window))

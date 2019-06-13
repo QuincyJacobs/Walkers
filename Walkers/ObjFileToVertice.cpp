@@ -40,9 +40,8 @@ std::vector<float> ObjFileToVertice::ReadVectors(char *fileDir)
 				{
 					results.push_back(result);
 				}
-				// HINT: {iss} inserts several elements into an STL container instead of 1 at a time
 
-				int newContainerSize = prevFloats.size() + 3;
+				int newContainerSize = prevFloats.size() + 6;
 				std::vector<float> parsedFloats(newContainerSize);
 
 				// copy older values into new container
@@ -53,7 +52,8 @@ std::vector<float> ObjFileToVertice::ReadVectors(char *fileDir)
 				// copy new values in new container
 				for (int i = 0; i < 3; i++)
 				{
-					parsedFloats[newContainerSize - (3-i)] = ::strtof(results[i+1].c_str(),0);
+					parsedFloats[newContainerSize - (6-i)] = ::strtof(results[i+1].c_str(),0);
+					parsedFloats[newContainerSize - (3 - i)] = 0.0f;
 				}
 				prevFloats.clear();
 				prevFloats = parsedFloats;
