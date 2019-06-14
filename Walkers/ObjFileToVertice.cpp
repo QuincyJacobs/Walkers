@@ -41,7 +41,7 @@ std::vector<float> ObjFileToVertice::ReadVectors(char *fileDir)
 					results.push_back(result);
 				}
 
-				int newContainerSize = prevFloats.size() + 6;
+				const int newContainerSize = prevFloats.size() + 6;
 				std::vector<float> parsedFloats(newContainerSize);
 
 				// copy older values into new container
