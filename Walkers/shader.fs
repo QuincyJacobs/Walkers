@@ -16,10 +16,11 @@ void main()
 {
     // colors
     // FragColor = vec4(VertexColor, 1.0f);
+    FragColor = vec4(0.5f,0.5f,0.5f, 1.0f);
 
     // modify texture for fun
-    vec4 texture2vec = texture(texture2, vec2(-TexCoord.x, TexCoord.y));
+    //vec4 texture2vec = texture(texture2, vec2(-TexCoord.x, TexCoord.y));
 
     // with textures
-    FragColor = mix(texture(texture1, TexCoord), vec4(texture2vec.x, texture2vec.y, texture2vec.z, texture2vec.w), texMix); 
+   // FragColor = mix(texture(texture1, TexCoord), vec4(texture2vec.x, texture2vec.y, texture2vec.z, texture2vec.w), texMix); 
 }

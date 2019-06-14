@@ -163,13 +163,8 @@ int main()
 	// TODO(Quincy): read up on STL containers
 	// TODO(Quincy): read up on std::vector
 
-	// TODO(Quincy): do something with mugPositions!
 	ObjFileToVertice *oftv = new ObjFileToVertice();
-	std::vector<float> mugPositions = oftv->ReadVectors("Resource_Files/Models/mug1.txt");
-
-	float *mugVertices;
-	mugVertices = (float*)malloc(mugPositions.size() * sizeof(float));
-	std::copy(mugPositions.begin(), mugPositions.end(), mugVertices);
+	std::vector<float> mugVertices = oftv->ReadVectors("Resource_Files/Models/mug1.txt");
 	
 
 	// Textures
@@ -193,23 +188,23 @@ int main()
 
 	// Vertex Buffer Object
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mugVertices.size() * sizeof(float), &mugVertices.front(), GL_STATIC_DRAW);
 
 	// Element Buffer Object
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// positions
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// colors
-	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	//glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	// textures
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(2);
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -308,7 +303,7 @@ int main()
 
 			myShader.setMat4("model", model);
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glDrawArrays(GL_TRIANGLES, 0, mugVertices.size());
 		}
 
 		// rotating block
